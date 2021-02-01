@@ -1,7 +1,7 @@
 FROM ubuntu:18.04
 
 # Prerequisites
-RUN apt update && apt install -y curl git unzip xz-utils zip libglu1-mesa openjdk-8-jdk wget
+RUN apt update && apt install -y curl git unzip xz-utils zip libglu1-mesa openjdk-8-jdk wget zsh
 
 # Set up new user
 RUN useradd -ms /bin/bash developer
@@ -22,9 +22,13 @@ RUN cd Android/sdk/tools/bin && ./sdkmanager "build-tools;29.0.2" "patcher;v4" "
 ENV PATH "$PATH:/home/developer/Android/sdk/platform-tools"
 
 # Download Flutter SDK
-RUN git clone https://github.com/flutter/flutter.git
+# RUN git clone https://github.com/flutter/flutter.git
+RUN wget -O flutter.tar.xz https://storage.googleapis.com/flutter_infra/releases/dev/linux/flutter_linux_1.26.0-1.0.pre-dev.tar.xz
+RUN tar xf flutter.tar.xz
 ENV PATH "$PATH:/home/developer/flutter/bin"
 RUN flutter precache --android
+
+RUN wget -O .zshrc https://raw.githubusercontent.com/tksgi/dotfiles/master/zsh/mainconf.zsh
 
 # Run basic check to download Dark SDK
 RUN flutter doctor
